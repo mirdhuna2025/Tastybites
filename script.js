@@ -1,4 +1,4 @@
-// script.js - Single Admin Login, Image URLs, ₹ Rupees, Popup Cart
+// script.js - Customer facing page with restaurant admin access
 
 // DATABASE STRUCTURE
 let database = {
@@ -6,7 +6,8 @@ let database = {
         {
             id: 1,
             name: "Pizza Palace",
-            password: "palace", // Admin password for this restaurant
+            password: "palace",
+            imageUrl: "https://via.placeholder.com/300x200?text=Pizza+Palace",
             menuItems: [
                 { id: 1, name: "Margherita Pizza", price: 349, image: "https://via.placeholder.com/300x200?text=Margherita+Pizza" },
                 { id: 2, name: "Pepperoni Pizza", price: 429, image: "https://via.placeholder.com/300x200?text=Pepperoni+Pizza" },
@@ -17,6 +18,7 @@ let database = {
             id: 2,
             name: "Burger Barn",
             password: "barn",
+            imageUrl: "https://via.placeholder.com/300x200?text=Burger+Barn",
             menuItems: [
                 { id: 4, name: "Classic Cheeseburger", price: 259, image: "https://via.placeholder.com/300x200?text=Cheeseburger" },
                 { id: 5, name: "Bacon Avocado Burger", price: 349, image: "https://via.placeholder.com/300x200?text=Bacon+Avocado" },
@@ -27,6 +29,7 @@ let database = {
             id: 3,
             name: "Sushi Spot",
             password: "spot",
+            imageUrl: "https://via.placeholder.com/300x200?text=Sushi+Spot",
             menuItems: [
                 { id: 7, name: "California Roll", price: 299, image: "https://via.placeholder.com/300x200?text=California+Roll" },
                 { id: 8, name: "Spicy Tuna Roll", price: 379, image: "https://via.placeholder.com/300x200?text=Spicy+Tuna" },
@@ -40,7 +43,7 @@ let database = {
 let cart = [];
 let currentRestaurant = null;
 let currentAdminRestaurant = null;
-let loggedInAdmin = false;
+let loggedInRestaurantAdmin = false;
 
 // DOM ELEMENTS
 const restaurantsContainer = document.getElementById('restaurantsContainer');
@@ -48,7 +51,7 @@ const menuContainer = document.getElementById('menuContainer');
 const currentRestaurantName = document.getElementById('currentRestaurantName');
 const searchInput = document.getElementById('searchInput');
 const searchBtn = document.getElementById('searchBtn');
-const cartBtn = document.getElementById('cartBtn');
+const floatingCartBtn = document.getElementById('floatingCartBtn');
 const cartCount = document.getElementById('cartCount');
 const cartModal = document.getElementById('cartModal');
 const cartItems = document.getElementById('cartItems');
@@ -58,14 +61,22 @@ const checkoutModal = document.getElementById('checkoutModal');
 const checkoutForm = document.getElementById('checkoutForm');
 const orderItemsSummary = document.getElementById('orderItemsSummary');
 const orderTotal = document.getElementById('orderTotal');
-const orderConfirmModal = document.getElementById('orderConfirmModal');
-const orderNumber = document.getElementById('orderNumber');
-const closeConfirmBtn = document.getElementById('closeConfirmBtn');
-const adminLoginModal = document.getElementById('adminLoginModal');
-const adminDashboard = document.getElementById('adminDashboard');
+const orderReceiptPage = document.getElementById('orderReceiptPage');
+const receiptOrderNumber = document.getElementById('receiptOrderNumber');
+const receiptDateTime = document.getElementById('receiptDateTime');
+const receiptRestaurantName = document.getElementById('receiptRestaurantName');
+const receiptCustomerName = document.getElementById('receiptCustomerName');
+const receiptCustomerPhone = document.getElementById('receiptCustomerPhone');
+const receiptCustomerAddress = document.getElementById('receiptCustomerAddress');
+const receiptItemsBody = document.getElementById('receiptItemsBody');
+const receiptGrandTotal = document.getElementById('receiptGrandTotal');
+const printReceiptBtn = document.getElementById('printReceiptBtn');
+const backToHomeBtn = document.getElementById('backToHomeBtn');
+const restaurantAdminLoginModal = document.getElementById('restaurantAdminLoginModal');
+const restaurantAdminDashboard = document.getElementById('restaurantAdminDashboard');
 const adminRestaurantName = document.getElementById('adminRestaurantName');
-const logoutBtn = document.getElementById('logoutBtn');
-const adminLoginBtn = document.getElementById('adminLoginBtn');
+const restaurantLogoutBtn = document.getElementById('restaurantLogoutBtn');
+const footerAdminLoginBtn = document.getElementById('footerAdminLoginBtn');
 
 // INITIALIZE APP
 document.addEventListener('DOMContentLoaded', function() {
@@ -83,7 +94,7 @@ function loadRestaurants() {
         const restaurantCard = document.createElement('div');
         restaurantCard.className = 'restaurant-card';
         restaurantCard.innerHTML = `
-            <img src="https://via.placeholder.com/300x200?text=${encodeURIComponent(restaurant.name)}" alt="${restaurant.name}">
+            <img src="${restaurant.imageUrl || 'https://via.placeholder.com/300x200?text=' + encodeURIComponent(restaurant.name)}" alt="${restaurant.name}">
             <h3>${restaurant.name}</h3>
             <p>${restaurant.menuItems.length} items available</p>
             <button class="view-menu-btn" data-id="${restaurant.id}">View Menu</button>
@@ -147,14 +158,14 @@ function setupEventListeners() {
     searchInput.addEventListener('input', filterMenuItems);
     searchBtn.addEventListener('click', filterMenuItems);
     
-    // Cart button
-    cartBtn.addEventListener('click', function() {
+    // Floating cart button
+    floatingCartBtn.addEventListener('click', function() {
         showCartModal();
     });
     
-    // Global Admin Login button
-    adminLoginBtn.addEventListener('click', function() {
-        adminLoginModal.style.display = 'flex';
+    // Footer admin login button
+    footerAdminLoginBtn.addEventListener('click', function() {
+        restaurantAdminLoginModal.style.display = 'flex';
     });
     
     // Modal close buttons
@@ -187,14 +198,19 @@ function setupEventListeners() {
         placeOrder();
     });
     
-    // Close confirmation
-    closeConfirmBtn.addEventListener('click', function() {
-        orderConfirmModal.style.display = 'none';
-        clearCart();
+    // Print receipt button
+    printReceiptBtn.addEventListener('click', function() {
+        window.print();
     });
     
-    // Admin login form (SINGLE GLOBAL LOGIN)
-    document.getElementById('adminLoginForm').addEventListener('submit', function(e) {
+    // Back to home button
+    backToHomeBtn.addEventListener('click', function() {
+        orderReceiptPage.style.display = 'none';
+        window.location.href = 'index.html';
+    });
+    
+    // Restaurant Admin login form
+    document.getElementById('restaurantAdminLoginForm').addEventListener('submit', function(e) {
         e.preventDefault();
         
         const restaurantId = parseInt(document.getElementById('restaurantId').value);
@@ -213,20 +229,20 @@ function setupEventListeners() {
         }
         
         // Login successful
-        loggedInAdmin = true;
+        loggedInRestaurantAdmin = true;
         currentAdminRestaurant = restaurant;
-        adminLoginModal.style.display = 'none';
-        showAdminDashboard(restaurant);
+        restaurantAdminLoginModal.style.display = 'none';
+        showRestaurantAdminDashboard(restaurant);
     });
     
-    // Logout button
-    logoutBtn.addEventListener('click', function() {
-        loggedInAdmin = false;
-        adminDashboard.style.display = 'none';
+    // Restaurant Admin logout button
+    restaurantLogoutBtn.addEventListener('click', function() {
+        loggedInRestaurantAdmin = false;
+        restaurantAdminDashboard.style.display = 'none';
         currentAdminRestaurant = null;
     });
     
-    // Tab switching
+    // Restaurant Admin tab switching
     document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.addEventListener('click', function() {
             // Remove active class from all tabs
@@ -533,24 +549,68 @@ function showCheckoutModal() {
 function placeOrder() {
     // Generate random order number
     const orderNum = 'TB' + Math.floor(100000 + Math.random() * 900000);
-    orderNumber.textContent = orderNum;
+    
+    // Get current date and time
+    const now = new Date();
+    const dateTimeString = now.toLocaleString('en-IN', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+    });
+    
+    // Populate receipt
+    receiptOrderNumber.textContent = orderNum;
+    receiptDateTime.textContent = dateTimeString;
+    receiptRestaurantName.textContent = currentRestaurant.name;
+    receiptCustomerName.textContent = document.getElementById('customerName').value;
+    receiptCustomerPhone.textContent = document.getElementById('customerPhone').value;
+    receiptCustomerAddress.textContent = document.getElementById('customerAddress').value;
+    
+    // Clear items table body
+    receiptItemsBody.innerHTML = '';
+    
+    // Add items to receipt
+    let grandTotal = 0;
+    cart.forEach(item => {
+        const row = document.createElement('tr');
+        const totalForItem = item.price * item.quantity;
+        grandTotal += totalForItem;
+        
+        row.innerHTML = `
+            <td>${item.name}</td>
+            <td>${item.quantity}</td>
+            <td>₹${item.price.toFixed(2)}</td>
+            <td>₹${totalForItem.toFixed(2)}</td>
+        `;
+        receiptItemsBody.appendChild(row);
+    });
+    
+    receiptGrandTotal.textContent = `₹${grandTotal.toFixed(2)}`;
+    
+    // Show receipt page
+    checkoutModal.style.display = 'none';
+    orderReceiptPage.style.display = 'block';
+    
+    // Clear cart
+    clearCart();
+    
+    // Clear form
+    checkoutForm.reset();
     
     // In a real app, you would send this data to a server
     console.log('Order placed:', {
         orderNumber: orderNum,
-        customerName: document.getElementById('customerName').value,
-        customerPhone: document.getElementById('customerPhone').value,
-        customerAddress: document.getElementById('customerAddress').value,
+        dateTime: dateTimeString,
+        restaurant: currentRestaurant.name,
+        customerName: receiptCustomerName.textContent,
+        customerPhone: receiptCustomerPhone.textContent,
+        customerAddress: receiptCustomerAddress.textContent,
         items: cart,
-        total: cart.reduce((sum, item) => sum + (item.price * item.quantity), 0)
+        total: grandTotal
     });
-    
-    // Show confirmation
-    checkoutModal.style.display = 'none';
-    orderConfirmModal.style.display = 'flex';
-    
-    // Clear form
-    checkoutForm.reset();
 }
 
 // NOTIFICATION FUNCTION
@@ -558,8 +618,8 @@ function showNotification(message) {
     // Create notification element
     const notification = document.createElement('div');
     notification.style.position = 'fixed';
-    notification.style.bottom = '20px';
-    notification.style.right = '20px';
+    notification.style.bottom = '90px'; // Above floating cart button
+    notification.style.right = '30px';
     notification.style.backgroundColor = '#4caf50';
     notification.style.color = 'white';
     notification.style.padding = '15px 25px';
@@ -595,12 +655,12 @@ style.textContent = `
 `;
 document.head.appendChild(style);
 
-// ADMIN FUNCTIONS
-function showAdminDashboard(restaurant) {
+// RESTAURANT ADMIN FUNCTIONS
+function showRestaurantAdminDashboard(restaurant) {
     if (!restaurant) return;
     
     adminRestaurantName.textContent = restaurant.name;
-    adminDashboard.style.display = 'block';
+    restaurantAdminDashboard.style.display = 'block';
     
     // Load the view menu tab by default
     loadAdminMenu();
@@ -739,36 +799,4 @@ function deleteMenuItem() {
     if (currentRestaurant && currentRestaurant.id === currentAdminRestaurant.id) {
         showRestaurantMenu(currentRestaurant.id);
     }
-}
-
-// DATABASE SCHEMA FOR FUTURE INTEGRATION
-/*
-For MySQL:
-CREATE TABLE restaurants (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    name VARCHAR(255) NOT NULL,
-    password VARCHAR(255) NOT NULL  -- In real app, store hashed passwords
-);
-
-CREATE TABLE menu_items (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    restaurant_id INT NOT NULL,
-    name VARCHAR(255) NOT NULL,
-    price DECIMAL(10,2) NOT NULL,
-    image_url TEXT,
-    FOREIGN KEY (restaurant_id) REFERENCES restaurants(id)
-);
-
-For Firebase/Supabase:
-Collection/Table: restaurants
-- id (string/uuid)
-- name (string)
-- password (string) -- hashed in production
-
-Collection/Table: menu_items
-- id (string/uuid)
-- restaurant_id (string/reference)
-- name (string)
-- price (number)
-- image_url (string)
-*/
+                    }

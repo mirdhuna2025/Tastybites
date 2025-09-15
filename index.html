@@ -27,6 +27,7 @@
                     <button id="searchBtn">🔍</button>
                 </div>
                 <button id="cartBtn" class="cart-button">🛒 Cart (<span id="cartCount">0</span>)</button>
+                <button id="adminLoginBtn" class="admin-login-global">🔐 Admin Login</button>
             </div>
         </div>
     </header>
@@ -36,14 +37,14 @@
         <!-- HOME -->
         <section id="home" class="section">
             <div class="hero">
-                <h2>घर बैठे स्वादिष्ट भोजन का आनंद लें!</h2>
-                <p>भारत के टॉप रेस्तरां का मेनू — एक ही जगह पर।</p>
+                <h2>Enjoy Delicious Meals from Home!</h2>
+                <p>Menus from top Indian restaurants — all in one place.</p>
             </div>
         </section>
 
         <!-- RESTAURANTS -->
         <section id="restaurants" class="section">
-            <h2>हमारे रेस्तरां</h2>
+            <h2>Our Restaurants</h2>
             <div class="restaurants-grid" id="restaurantsContainer">
                 <!-- Populated by JS -->
             </div>
@@ -51,7 +52,7 @@
 
         <!-- MENU -->
         <section id="menu" class="section">
-            <h2 id="currentRestaurantName">मेनू</h2>
+            <h2 id="currentRestaurantName">Menu</h2>
             <div class="menu-grid" id="menuContainer">
                 <!-- Populated by JS -->
             </div>
@@ -59,73 +60,73 @@
 
         <!-- CONTACT -->
         <section id="contact" class="section">
-            <h2>संपर्क करें</h2>
+            <h2>Contact Us</h2>
             <div class="contact-form">
                 <form id="contactForm">
-                    <input type="text" placeholder="आपका नाम" required>
-                    <input type="tel" placeholder="मोबाइल नंबर" required>
-                    <textarea placeholder="आपका संदेश" rows="5" required></textarea>
-                    <button type="submit">भेजें</button>
+                    <input type="text" placeholder="Your Name" required>
+                    <input type="tel" placeholder="Phone Number" required>
+                    <textarea placeholder="Your Message" rows="5" required></textarea>
+                    <button type="submit">Send Message</button>
                 </form>
             </div>
         </section>
 
-        <!-- ADMIN LOGIN MODAL -->
+        <!-- ADMIN LOGIN MODAL (SINGLE GLOBAL LOGIN) -->
         <div id="adminLoginModal" class="modal">
             <div class="modal-content">
                 <span class="close">&times;</span>
-                <h3>रेस्तरां मालिक लॉगिन</h3>
+                <h3>Restaurant Admin Login</h3>
                 <form id="adminLoginForm">
-                    <input type="text" id="adminUsername" placeholder="यूजरनेम" required>
-                    <input type="password" id="adminPassword" placeholder="पासवर्ड" required>
-                    <button type="submit">लॉगिन करें</button>
+                    <input type="number" id="restaurantId" placeholder="Restaurant ID" min="1" required>
+                    <input type="password" id="adminPassword" placeholder="Password" required>
+                    <button type="submit">Login</button>
                 </form>
-                <p class="demo-note">डेमो: कोई भी यूजरनेम/पासवर्ड डालें</p>
+                <p class="demo-note">Demo:<br>Restaurant ID: 1, Password: palace<br>Restaurant ID: 2, Password: barn<br>Restaurant ID: 3, Password: spot</p>
             </div>
         </div>
 
         <!-- ADMIN DASHBOARD -->
         <div id="adminDashboard" class="admin-dashboard">
             <div class="dashboard-header">
-                <h3>एडमिन डैशबोर्ड - <span id="adminRestaurantName"></span></h3>
-                <button id="logoutBtn">लॉगआउट</button>
+                <h3>Admin Dashboard - <span id="adminRestaurantName"></span></h3>
+                <button id="logoutBtn">Logout</button>
             </div>
             <div class="dashboard-tabs">
-                <button class="tab-btn active" data-tab="view">मेनू देखें</button>
-                <button class="tab-btn" data-tab="add">नया आइटम जोड़ें</button>
-                <button class="tab-btn" data-tab="edit">आइटम संपादित करें</button>
+                <button class="tab-btn active" data-tab="view">View Menu</button>
+                <button class="tab-btn" data-tab="add">Add New Item</button>
+                <button class="tab-btn" data-tab="edit">Edit Item</button>
             </div>
 
             <!-- VIEW MENU -->
             <div id="viewTab" class="tab-content active">
-                <h4>आपका मेनू</h4>
+                <h4>Your Menu</h4>
                 <div class="menu-grid" id="adminMenuContainer"></div>
             </div>
 
             <!-- ADD ITEM -->
             <div id="addTab" class="tab-content">
-                <h4>नया मेनू आइटम जोड़ें</h4>
+                <h4>Add New Menu Item</h4>
                 <form id="addItemForm">
-                    <input type="text" id="newItemName" placeholder="व्यंजन का नाम" required>
-                    <input type="number" id="newItemPrice" placeholder="मूल्य (₹)" step="0.01" required>
-                    <input type="url" id="newItemImage" placeholder="इमेज URL (https://...)">
-                    <button type="submit">आइटम जोड़ें</button>
+                    <input type="text" id="newItemName" placeholder="Dish Name" required>
+                    <input type="number" id="newItemPrice" placeholder="Price (₹)" step="0.01" required>
+                    <input type="url" id="newItemImage" placeholder="Image URL (https://...)">
+                    <button type="submit">Add Item</button>
                 </form>
             </div>
 
             <!-- EDIT ITEM -->
             <div id="editTab" class="tab-content">
-                <h4>मेनू आइटम संपादित करें</h4>
+                <h4>Edit Menu Item</h4>
                 <select id="editItemSelect">
-                    <option value="">संपादित करने के लिए आइटम चुनें</option>
+                    <option value="">Select item to edit</option>
                 </select>
                 <form id="editItemForm" style="display: none;">
-                    <input type="text" id="editItemName" placeholder="व्यंजन का नाम" required>
-                    <input type="number" id="editItemPrice" placeholder="मूल्य (₹)" step="0.01" required>
-                    <input type="url" id="editItemImage" placeholder="इमेज URL (https://...)">
+                    <input type="text" id="editItemName" placeholder="Dish Name" required>
+                    <input type="number" id="editItemPrice" placeholder="Price (₹)" step="0.01" required>
+                    <input type="url" id="editItemImage" placeholder="Image URL (https://...)">
                     <div class="form-buttons">
-                        <button type="submit">अपडेट करें</button>
-                        <button type="button" id="deleteItemBtn" class="delete-btn">🗑️ हटाएं</button>
+                        <button type="submit">Update Item</button>
+                        <button type="button" id="deleteItemBtn" class="delete-btn">🗑️ Delete Item</button>
                     </div>
                 </form>
             </div>
@@ -136,7 +137,7 @@
     <div id="cartModal" class="modal">
         <div class="modal-content cart-modal">
             <div class="cart-header">
-                <h3>🛒 आपकी टोकरी</h3>
+                <h3>🛒 Your Cart</h3>
                 <span class="close">&times;</span>
             </div>
             <div id="cartItems" class="cart-items">
@@ -144,10 +145,10 @@
             </div>
             <div class="cart-summary">
                 <div class="cart-total">
-                    <span>कुल राशि:</span>
+                    <span>Total:</span>
                     <span id="cartTotal">₹0.00</span>
                 </div>
-                <button id="checkoutBtn" class="checkout-btn">ऑर्डर दें</button>
+                <button id="checkoutBtn" class="checkout-btn">Place Order</button>
             </div>
         </div>
     </div>
@@ -156,21 +157,21 @@
     <div id="checkoutModal" class="modal">
         <div class="modal-content checkout-modal">
             <div class="checkout-header">
-                <h3>📝 ऑर्डर कन्फर्म करें</h3>
+                <h3>📝 Confirm Your Order</h3>
                 <span class="close">&times;</span>
             </div>
             <form id="checkoutForm">
-                <input type="text" id="customerName" placeholder="आपका नाम" required>
-                <input type="tel" id="customerPhone" placeholder="मोबाइल नंबर" required>
-                <textarea id="customerAddress" placeholder="पता" rows="3" required></textarea>
+                <input type="text" id="customerName" placeholder="Your Name" required>
+                <input type="tel" id="customerPhone" placeholder="Phone Number" required>
+                <textarea id="customerAddress" placeholder="Delivery Address" rows="3" required></textarea>
                 <div class="order-summary">
-                    <h4>ऑर्डर सारांश</h4>
+                    <h4>Order Summary</h4>
                     <div id="orderItemsSummary"></div>
                     <div class="order-total">
-                        <strong>कुल: <span id="orderTotal">₹0.00</span></strong>
+                        <strong>Total: <span id="orderTotal">₹0.00</span></strong>
                     </div>
                 </div>
-                <button type="submit" class="place-order-btn">ऑर्डर पुष्टि करें</button>
+                <button type="submit" class="place-order-btn">Confirm Order</button>
             </form>
         </div>
     </div>
@@ -179,10 +180,10 @@
     <div id="orderConfirmModal" class="modal">
         <div class="modal-content confirm-modal">
             <div class="confirm-icon">✅</div>
-            <h3>धन्यवाद! आपका ऑर्डर सफलतापूर्वक दर्ज कर लिया गया है!</h3>
-            <p>आपका ऑर्डर नंबर: <strong id="orderNumber">TB123456</strong></p>
-            <p>हमारा डिलीवरी पार्टनर आपसे संपर्क करेगा।</p>
-            <button id="closeConfirmBtn" class="confirm-btn">बंद करें</button>
+            <h3>Thank you! Your order is confirmed!</h3>
+            <p>Your order number: <strong id="orderNumber">TB123456</strong></p>
+            <p>Our delivery partner will contact you shortly.</p>
+            <button id="closeConfirmBtn" class="confirm-btn">Close</button>
         </div>
     </div>
 
@@ -190,16 +191,16 @@
     <footer>
         <div class="footer-content">
             <div class="hours">
-                <h4>खुलने का समय</h4>
-                <p>सोमवार - शुक्रवार: सुबह 10:00 बजे - रात 10:00 बजे</p>
-                <p>शनिवार - रविवार: सुबह 11:00 बजे - रात 11:00 बजे</p>
+                <h4>Opening Hours</h4>
+                <p>Monday - Friday: 10:00 AM - 10:00 PM</p>
+                <p>Saturday - Sunday: 11:00 AM - 11:00 PM</p>
             </div>
             <div class="about">
-                <h4>हमारे बारे में</h4>
-                <p>TastyBites India आपको अपने पसंदीदा स्थानीय रेस्तरां से जोड़ता है। मेनू ब्राउज़ करें, नए व्यंजन खोजें, और सुविधाजनक डाइनिंग अनुभव का आनंद लें।</p>
+                <h4>About Us</h4>
+                <p>TastyBites India connects you with your favorite local restaurants. Browse menus, discover new dishes, and enjoy seamless dining experiences.</p>
             </div>
             <div class="social">
-                <h4>हमसे जुड़ें</h4>
+                <h4>Connect With Us</h4>
                 <div class="social-icons">
                     <a href="#" aria-label="Facebook">📱</a>
                     <a href="#" aria-label="Instagram">📷</a>
@@ -209,10 +210,10 @@
             </div>
         </div>
         <div class="footer-bottom">
-            <p>&copy; 2024 TastyBites India. सर्वाधिकार सुरक्षित।</p>
+            <p>&copy; 2024 TastyBites India. All rights reserved.</p>
         </div>
     </footer>
 
     <script src="script.js"></script>
 </body>
-                      </html>
+</html>

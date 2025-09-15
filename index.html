@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TastyBites India - Multi-Restaurant Menu</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- HEADER -->
+    <header class="sticky-header">
+        <div class="header-container">
+            <div class="logo">
+                <h1>🍛 TastyBites India</h1>
+            </div>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#restaurants">Restaurants</a></li>
+                    <li><a href="#menu">Menu</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+            <div class="header-actions">
+                <div class="search-bar">
+                    <input type="text" id="searchInput" placeholder="Search dishes...">
+                    <button id="searchBtn">🔍</button>
+                </div>
+                <button id="cartBtn" class="cart-button">🛒 Cart (<span id="cartCount">0</span>)</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main>
+        <!-- HOME -->
+        <section id="home" class="section">
+            <div class="hero">
+                <h2>घर बैठे स्वादिष्ट भोजन का आनंद लें!</h2>
+                <p>भारत के टॉप रेस्तरां का मेनू — एक ही जगह पर।</p>
+            </div>
+        </section>
+
+        <!-- RESTAURANTS -->
+        <section id="restaurants" class="section">
+            <h2>हमारे रेस्तरां</h2>
+            <div class="restaurants-grid" id="restaurantsContainer">
+                <!-- Populated by JS -->
+            </div>
+        </section>
+
+        <!-- MENU -->
+        <section id="menu" class="section">
+            <h2 id="currentRestaurantName">मेनू</h2>
+            <div class="menu-grid" id="menuContainer">
+                <!-- Populated by JS -->
+            </div>
+        </section>
+
+        <!-- CONTACT -->
+        <section id="contact" class="section">
+            <h2>संपर्क करें</h2>
+            <div class="contact-form">
+                <form id="contactForm">
+                    <input type="text" placeholder="आपका नाम" required>
+                    <input type="tel" placeholder="मोबाइल नंबर" required>
+                    <textarea placeholder="आपका संदेश" rows="5" required></textarea>
+                    <button type="submit">भेजें</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- ADMIN LOGIN MODAL -->
+        <div id="adminLoginModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h3>रेस्तरां मालिक लॉगिन</h3>
+                <form id="adminLoginForm">
+                    <input type="text" id="adminUsername" placeholder="यूजरनेम" required>
+                    <input type="password" id="adminPassword" placeholder="पासवर्ड" required>
+                    <button type="submit">लॉगिन करें</button>
+                </form>
+                <p class="demo-note">डेमो: कोई भी यूजरनेम/पासवर्ड डालें</p>
+            </div>
+        </div>
+
+        <!-- ADMIN DASHBOARD -->
+        <div id="adminDashboard" class="admin-dashboard">
+            <div class="dashboard-header">
+                <h3>एडमिन डैशबोर्ड - <span id="adminRestaurantName"></span></h3>
+                <button id="logoutBtn">लॉगआउट</button>
+            </div>
+            <div class="dashboard-tabs">
+                <button class="tab-btn active" data-tab="view">मेनू देखें</button>
+                <button class="tab-btn" data-tab="add">नया आइटम जोड़ें</button>
+                <button class="tab-btn" data-tab="edit">आइटम संपादित करें</button>
+            </div>
+
+            <!-- VIEW MENU -->
+            <div id="viewTab" class="tab-content active">
+                <h4>आपका मेनू</h4>
+                <div class="menu-grid" id="adminMenuContainer"></div>
+            </div>
+
+            <!-- ADD ITEM -->
+            <div id="addTab" class="tab-content">
+                <h4>नया मेनू आइटम जोड़ें</h4>
+                <form id="addItemForm">
+                    <input type="text" id="newItemName" placeholder="व्यंजन का नाम" required>
+                    <input type="number" id="newItemPrice" placeholder="मूल्य (₹)" step="0.01" required>
+                    <input type="url" id="newItemImage" placeholder="इमेज URL (https://...)">
+                    <button type="submit">आइटम जोड़ें</button>
+                </form>
+            </div>
+
+            <!-- EDIT ITEM -->
+            <div id="editTab" class="tab-content">
+                <h4>मेनू आइटम संपादित करें</h4>
+                <select id="editItemSelect">
+                    <option value="">संपादित करने के लिए आइटम चुनें</option>
+                </select>
+                <form id="editItemForm" style="display: none;">
+                    <input type="text" id="editItemName" placeholder="व्यंजन का नाम" required>
+                    <input type="number" id="editItemPrice" placeholder="मूल्य (₹)" step="0.01" required>
+                    <input type="url" id="editItemImage" placeholder="इमेज URL (https://...)">
+                    <div class="form-buttons">
+                        <button type="submit">अपडेट करें</button>
+                        <button type="button" id="deleteItemBtn" class="delete-btn">🗑️ हटाएं</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <!-- CART MODAL -->
+    <div id="cartModal" class="modal">
+        <div class="modal-content cart-modal">
+            <div class="cart-header">
+                <h3>🛒 आपकी टोकरी</h3>
+                <span class="close">&times;</span>
+            </div>
+            <div id="cartItems" class="cart-items">
+                <!-- Cart items will be added here -->
+            </div>
+            <div class="cart-summary">
+                <div class="cart-total">
+                    <span>कुल राशि:</span>
+                    <span id="cartTotal">₹0.00</span>
+                </div>
+                <button id="checkoutBtn" class="checkout-btn">ऑर्डर दें</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CHECKOUT MODAL -->
+    <div id="checkoutModal" class="modal">
+        <div class="modal-content checkout-modal">
+            <div class="checkout-header">
+                <h3>📝 ऑर्डर कन्फर्म करें</h3>
+                <span class="close">&times;</span>
+            </div>
+            <form id="checkoutForm">
+                <input type="text" id="customerName" placeholder="आपका नाम" required>
+                <input type="tel" id="customerPhone" placeholder="मोबाइल नंबर" required>
+                <textarea id="customerAddress" placeholder="पता" rows="3" required></textarea>
+                <div class="order-summary">
+                    <h4>ऑर्डर सारांश</h4>
+                    <div id="orderItemsSummary"></div>
+                    <div class="order-total">
+                        <strong>कुल: <span id="orderTotal">₹0.00</span></strong>
+                    </div>
+                </div>
+                <button type="submit" class="place-order-btn">ऑर्डर पुष्टि करें</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ORDER CONFIRMATION MODAL -->
+    <div id="orderConfirmModal" class="modal">
+        <div class="modal-content confirm-modal">
+            <div class="confirm-icon">✅</div>
+            <h3>धन्यवाद! आपका ऑर्डर सफलतापूर्वक दर्ज कर लिया गया है!</h3>
+            <p>आपका ऑर्डर नंबर: <strong id="orderNumber">TB123456</strong></p>
+            <p>हमारा डिलीवरी पार्टनर आपसे संपर्क करेगा।</p>
+            <button id="closeConfirmBtn" class="confirm-btn">बंद करें</button>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-content">
+            <div class="hours">
+                <h4>खुलने का समय</h4>
+                <p>सोमवार - शुक्रवार: सुबह 10:00 बजे - रात 10:00 बजे</p>
+                <p>शनिवार - रविवार: सुबह 11:00 बजे - रात 11:00 बजे</p>
+            </div>
+            <div class="about">
+                <h4>हमारे बारे में</h4>
+                <p>TastyBites India आपको अपने पसंदीदा स्थानीय रेस्तरां से जोड़ता है। मेनू ब्राउज़ करें, नए व्यंजन खोजें, और सुविधाजनक डाइनिंग अनुभव का आनंद लें।</p>
+            </div>
+            <div class="social">
+                <h4>हमसे जुड़ें</h4>
+                <div class="social-icons">
+                    <a href="#" aria-label="Facebook">📱</a>
+                    <a href="#" aria-label="Instagram">📷</a>
+                    <a href="#" aria-label="X (Twitter)">🐦</a>
+                    <a href="https://wa.me/91XXXXXXXXXX" aria-label="WhatsApp">💬</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 TastyBites India. सर्वाधिकार सुरक्षित।</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+                      </html>

@@ -26,11 +26,14 @@
                     <input type="text" id="searchInput" placeholder="Search dishes...">
                     <button id="searchBtn">🔍</button>
                 </div>
-                <button id="cartBtn" class="cart-button">🛒 Cart (<span id="cartCount">0</span>)</button>
-                <button id="adminLoginBtn" class="admin-login-global">🔐 Admin Login</button>
             </div>
         </div>
     </header>
+
+    <!-- FLOATING CART BUTTON -->
+    <button id="floatingCartBtn" class="floating-cart-btn">
+        🛒 Cart (<span id="cartCount">0</span>)
+    </button>
 
     <!-- MAIN CONTENT -->
     <main>
@@ -70,68 +73,109 @@
                 </form>
             </div>
         </section>
-
-        <!-- ADMIN LOGIN MODAL (SINGLE GLOBAL LOGIN) -->
-        <div id="adminLoginModal" class="modal">
-            <div class="modal-content">
-                <span class="close">&times;</span>
-                <h3>Restaurant Admin Login</h3>
-                <form id="adminLoginForm">
-                    <input type="number" id="restaurantId" placeholder="Restaurant ID" min="1" required>
-                    <input type="password" id="adminPassword" placeholder="Password" required>
-                    <button type="submit">Login</button>
-                </form>
-                <p class="demo-note">Demo:<br>Restaurant ID: 1, Password: palace<br>Restaurant ID: 2, Password: barn<br>Restaurant ID: 3, Password: spot</p>
-            </div>
-        </div>
-
-        <!-- ADMIN DASHBOARD -->
-        <div id="adminDashboard" class="admin-dashboard">
-            <div class="dashboard-header">
-                <h3>Admin Dashboard - <span id="adminRestaurantName"></span></h3>
-                <button id="logoutBtn">Logout</button>
-            </div>
-            <div class="dashboard-tabs">
-                <button class="tab-btn active" data-tab="view">View Menu</button>
-                <button class="tab-btn" data-tab="add">Add New Item</button>
-                <button class="tab-btn" data-tab="edit">Edit Item</button>
-            </div>
-
-            <!-- VIEW MENU -->
-            <div id="viewTab" class="tab-content active">
-                <h4>Your Menu</h4>
-                <div class="menu-grid" id="adminMenuContainer"></div>
-            </div>
-
-            <!-- ADD ITEM -->
-            <div id="addTab" class="tab-content">
-                <h4>Add New Menu Item</h4>
-                <form id="addItemForm">
-                    <input type="text" id="newItemName" placeholder="Dish Name" required>
-                    <input type="number" id="newItemPrice" placeholder="Price (₹)" step="0.01" required>
-                    <input type="url" id="newItemImage" placeholder="Image URL (https://...)">
-                    <button type="submit">Add Item</button>
-                </form>
-            </div>
-
-            <!-- EDIT ITEM -->
-            <div id="editTab" class="tab-content">
-                <h4>Edit Menu Item</h4>
-                <select id="editItemSelect">
-                    <option value="">Select item to edit</option>
-                </select>
-                <form id="editItemForm" style="display: none;">
-                    <input type="text" id="editItemName" placeholder="Dish Name" required>
-                    <input type="number" id="editItemPrice" placeholder="Price (₹)" step="0.01" required>
-                    <input type="url" id="editItemImage" placeholder="Image URL (https://...)">
-                    <div class="form-buttons">
-                        <button type="submit">Update Item</button>
-                        <button type="button" id="deleteItemBtn" class="delete-btn">🗑️ Delete Item</button>
-                    </div>
-                </form>
-            </div>
-        </div>
     </main>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-content">
+            <div class="hours">
+                <h4>Opening Hours</h4>
+                <p>Monday - Friday: 10:00 AM - 10:00 PM</p>
+                <p>Saturday - Sunday: 11:00 AM - 11:00 PM</p>
+            </div>
+            <div class="about">
+                <h4>About Us</h4>
+                <p>TastyBites India connects you with your favorite local restaurants. Browse menus, discover new dishes, and enjoy seamless dining experiences.</p>
+            </div>
+            <div class="social">
+                <h4>Connect With Us</h4>
+                <div class="social-icons">
+                    <a href="#" aria-label="Facebook">📱</a>
+                    <a href="#" aria-label="Instagram">📷</a>
+                    <a href="#" aria-label="X (Twitter)">🐦</a>
+                    <a href="https://wa.me/91XXXXXXXXXX" aria-label="WhatsApp">💬</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 TastyBites India. All rights reserved.</p>
+            <!-- Admin Login Button in Footer Corner -->
+            <button id="footerAdminLoginBtn" class="footer-admin-login">🔐 Admin</button>
+        </div>
+    </footer>
+
+    <!-- ADMIN LOGIN MODAL -->
+    <div id="adminLoginModal" class="modal">
+        <div class="modal-content admin-login-modal">
+            <span class="close">&times;</span>
+            <h3>Restaurant Admin Login</h3>
+            <form id="adminLoginForm">
+                <input type="number" id="restaurantId" placeholder="Restaurant ID" min="1" required>
+                <input type="password" id="adminPassword" placeholder="Password" required>
+                <button type="submit">Login</button>
+            </form>
+            <p class="demo-note">Demo:<br>Restaurant ID: 1, Password: palace<br>Restaurant ID: 2, Password: barn<br>Restaurant ID: 3, Password: spot</p>
+        </div>
+    </div>
+
+    <!-- ADMIN DASHBOARD -->
+    <div id="adminDashboard" class="admin-dashboard">
+        <div class="dashboard-header">
+            <h3>Admin Dashboard - <span id="adminRestaurantName"></span></h3>
+            <button id="logoutBtn">Logout</button>
+        </div>
+        <div class="dashboard-tabs">
+            <button class="tab-btn active" data-tab="view">View Menu</button>
+            <button class="tab-btn" data-tab="add">Add New Item</button>
+            <button class="tab-btn" data-tab="edit">Edit Item</button>
+            <button class="tab-btn" data-tab="addRestaurant">➕ Add Restaurant</button>
+        </div>
+
+        <!-- VIEW MENU -->
+        <div id="viewTab" class="tab-content active">
+            <h4>Your Menu</h4>
+            <div class="menu-grid" id="adminMenuContainer"></div>
+        </div>
+
+        <!-- ADD ITEM -->
+        <div id="addTab" class="tab-content">
+            <h4>Add New Menu Item</h4>
+            <form id="addItemForm">
+                <input type="text" id="newItemName" placeholder="Dish Name" required>
+                <input type="number" id="newItemPrice" placeholder="Price (₹)" step="0.01" required>
+                <input type="url" id="newItemImage" placeholder="Image URL (https://...)">
+                <button type="submit">Add Item</button>
+            </form>
+        </div>
+
+        <!-- EDIT ITEM -->
+        <div id="editTab" class="tab-content">
+            <h4>Edit Menu Item</h4>
+            <select id="editItemSelect">
+                <option value="">Select item to edit</option>
+            </select>
+            <form id="editItemForm" style="display: none;">
+                <input type="text" id="editItemName" placeholder="Dish Name" required>
+                <input type="number" id="editItemPrice" placeholder="Price (₹)" step="0.01" required>
+                <input type="url" id="editItemImage" placeholder="Image URL (https://...)">
+                <div class="form-buttons">
+                    <button type="submit">Update Item</button>
+                    <button type="button" id="deleteItemBtn" class="delete-btn">🗑️ Delete Item</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- ADD RESTAURANT -->
+        <div id="addRestaurantTab" class="tab-content">
+            <h4>Add New Restaurant</h4>
+            <form id="addRestaurantForm">
+                <input type="text" id="newRestaurantName" placeholder="Restaurant Name" required>
+                <input type="password" id="newRestaurantPassword" placeholder="Admin Password" required>
+                <input type="url" id="newRestaurantImage" placeholder="Restaurant Image URL (https://...)">
+                <button type="submit">Add Restaurant</button>
+            </form>
+        </div>
+    </div>
 
     <!-- CART MODAL -->
     <div id="cartModal" class="modal">
@@ -176,43 +220,64 @@
         </div>
     </div>
 
-    <!-- ORDER CONFIRMATION MODAL -->
-    <div id="orderConfirmModal" class="modal">
-        <div class="modal-content confirm-modal">
-            <div class="confirm-icon">✅</div>
-            <h3>Thank you! Your order is confirmed!</h3>
-            <p>Your order number: <strong id="orderNumber">TB123456</strong></p>
-            <p>Our delivery partner will contact you shortly.</p>
-            <button id="closeConfirmBtn" class="confirm-btn">Close</button>
+    <!-- ORDER RECEIPT PAGE (Hidden by default) -->
+    <div id="orderReceiptPage" class="receipt-page" style="display: none;">
+        <div class="receipt-container">
+            <div class="receipt-header">
+                <h1>ORDER RECEIPT</h1>
+                <p>Thank you for your order!</p>
+                <hr>
+            </div>
+            <div class="receipt-body">
+                <div class="order-info">
+                    <h3>Order Details</h3>
+                    <p><strong>Order Number:</strong> <span id="receiptOrderNumber">TB123456</span></p>
+                    <p><strong>Date & Time:</strong> <span id="receiptDateTime"></span></p>
+                </div>
+                
+                <div class="restaurant-info">
+                    <h3>Restaurant</h3>
+                    <p><strong>Name:</strong> <span id="receiptRestaurantName"></span></p>
+                </div>
+                
+                <div class="customer-info">
+                    <h3>Customer Information</h3>
+                    <p><strong>Name:</strong> <span id="receiptCustomerName"></span></p>
+                    <p><strong>Phone:</strong> <span id="receiptCustomerPhone"></span></p>
+                    <p><strong>Address:</strong> <span id="receiptCustomerAddress"></span></p>
+                </div>
+                
+                <div class="items-info">
+                    <h3>Ordered Items</h3>
+                    <table id="receiptItemsTable">
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Qty</th>
+                                <th>Price</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody id="receiptItemsBody">
+                            <!-- Items will be inserted here -->
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="3" style="text-align: right;"><strong>Grand Total:</strong></td>
+                                <td><strong id="receiptGrandTotal">₹0.00</strong></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+            <div class="receipt-footer">
+                <button id="printReceiptBtn" class="print-btn">🖨️ Print Receipt</button>
+                <button id="backToHomeBtn" class="back-btn">🏠 Back to Home</button>
+            </div>
         </div>
     </div>
 
-    <!-- FOOTER -->
-    <footer>
-        <div class="footer-content">
-            <div class="hours">
-                <h4>Opening Hours</h4>
-                <p>Monday - Friday: 10:00 AM - 10:00 PM</p>
-                <p>Saturday - Sunday: 11:00 AM - 11:00 PM</p>
-            </div>
-            <div class="about">
-                <h4>About Us</h4>
-                <p>TastyBites India connects you with your favorite local restaurants. Browse menus, discover new dishes, and enjoy seamless dining experiences.</p>
-            </div>
-            <div class="social">
-                <h4>Connect With Us</h4>
-                <div class="social-icons">
-                    <a href="#" aria-label="Facebook">📱</a>
-                    <a href="#" aria-label="Instagram">📷</a>
-                    <a href="#" aria-label="X (Twitter)">🐦</a>
-                    <a href="https://wa.me/91XXXXXXXXXX" aria-label="WhatsApp">💬</a>
-                </div>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2024 TastyBites India. All rights reserved.</p>
-        </div>
-    </footer>
+    <!-- ORDER CONFIRMATION MODAL (Removed - Replaced with Receipt Page) -->
 
     <script src="script.js"></script>
 </body>

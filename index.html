@@ -1,0 +1,1648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TastyBites India - Multi-Restaurant Food Ordering</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Embedded all CSS styles into the HTML file */
+        /* Design System Variables */
+        :root {
+          --background: #ffffff;
+          --foreground: #4b5563;
+          --card: #f9fafb;
+          --card-foreground: #4b5563;
+          --popover: #ffffff;
+          --popover-foreground: #4b5563;
+          --primary: #0891b2;
+          --primary-foreground: #ffffff;
+          --secondary: #6366f1;
+          --secondary-foreground: #ffffff;
+          --muted: #f9fafb;
+          --muted-foreground: #4b5563;
+          --accent: #6366f1;
+          --accent-foreground: #ffffff;
+          --destructive: #ef4444;
+          --destructive-foreground: #ffffff;
+          --border: #d1d5db;
+          --input: #f9fafb;
+          --ring: rgba(13, 148, 136, 0.5);
+          --radius: 0.5rem;
+          --sidebar: #ffffff;
+          --sidebar-foreground: #4b5563;
+          --sidebar-primary: #f9fafb;
+          --sidebar-primary-foreground: #4b5563;
+          --sidebar-accent: #6366f1;
+          --sidebar-accent-foreground: #ffffff;
+          --sidebar-border: #d1d5db;
+          --sidebar-ring: rgba(13, 148, 136, 0.3);
+        }
+
+        /* Reset and Base Styles */
+        * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+        }
+
+        body {
+          font-family: "Open Sans", sans-serif;
+          background-color: var(--background);
+          color: var(--foreground);
+          line-height: 1.6;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+          font-family: "Montserrat", sans-serif;
+          font-weight: 700;
+        }
+
+        .container {
+          max-width: 1200px;
+          margin: 0 auto;
+          padding: 0 1rem;
+        }
+
+        /* Header Styles */
+        .header {
+          background-color: var(--primary);
+          color: var(--primary-foreground);
+          padding: 1rem 0;
+          position: sticky;
+          top: 0;
+          z-index: 100;
+          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header .container {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 2rem;
+        }
+
+        .nav-brand h1 {
+          font-size: 1.5rem;
+          font-weight: 900;
+        }
+
+        .nav-search {
+          flex: 1;
+          max-width: 400px;
+        }
+
+        .search-input {
+          width: 100%;
+          padding: 0.75rem 1rem;
+          border: none;
+          border-radius: var(--radius);
+          background-color: var(--input);
+          color: var(--foreground);
+          font-size: 1rem;
+        }
+
+        .search-input:focus {
+          outline: 2px solid var(--ring);
+        }
+
+        .nav-actions {
+          display: flex;
+          gap: 1rem;
+          align-items: center;
+        }
+
+        .cart-btn, .admin-btn {
+          background-color: var(--secondary);
+          color: var(--secondary-foreground);
+          border: none;
+          padding: 0.75rem 1rem;
+          border-radius: var(--radius);
+          cursor: pointer;
+          font-weight: 600;
+          transition: all 0.2s;
+        }
+
+        .cart-btn:hover, .admin-btn:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Hero Section */
+        .hero {
+          background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+          color: var(--primary-foreground);
+          padding: 4rem 0;
+          text-align: center;
+        }
+
+        .hero-content h2 {
+          font-size: 3rem;
+          font-weight: 900;
+          margin-bottom: 1rem;
+          text-wrap: balance;
+        }
+
+        .hero-content p {
+          font-size: 1.25rem;
+          margin-bottom: 2rem;
+          opacity: 0.9;
+          text-wrap: pretty;
+        }
+
+        .cta-btn {
+          background-color: var(--accent);
+          color: var(--accent-foreground);
+          border: none;
+          padding: 1rem 2rem;
+          font-size: 1.1rem;
+          font-weight: 600;
+          border-radius: var(--radius);
+          cursor: pointer;
+          transition: all 0.3s;
+        }
+
+        .cta-btn:hover {
+          transform: translateY(-3px);
+          box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Restaurants Section */
+        .restaurants {
+          padding: 4rem 0;
+        }
+
+        .restaurants h2 {
+          text-align: center;
+          font-size: 2.5rem;
+          margin-bottom: 3rem;
+          color: var(--foreground);
+        }
+
+        .restaurants-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+          gap: 2rem;
+        }
+
+        .restaurant-card {
+          background-color: var(--card);
+          border-radius: var(--radius);
+          overflow: hidden;
+          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+          transition: all 0.3s;
+          cursor: pointer;
+        }
+
+        .restaurant-card:hover {
+          transform: translateY(-5px);
+          box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .restaurant-image {
+          width: 100%;
+          height: 200px;
+          object-fit: cover;
+        }
+
+        .restaurant-info {
+          padding: 1.5rem;
+        }
+
+        .restaurant-info h3 {
+          font-size: 1.5rem;
+          margin-bottom: 0.5rem;
+          color: var(--card-foreground);
+        }
+
+        .restaurant-meta {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 1rem;
+          font-size: 0.9rem;
+          color: var(--muted-foreground);
+        }
+
+        .restaurant-description {
+          color: var(--card-foreground);
+          margin-bottom: 1rem;
+        }
+
+        .view-menu-btn {
+          background-color: var(--primary);
+          color: var(--primary-foreground);
+          border: none;
+          padding: 0.75rem 1.5rem;
+          border-radius: var(--radius);
+          cursor: pointer;
+          font-weight: 600;
+          width: 100%;
+          transition: all 0.2s;
+        }
+
+        .view-menu-btn:hover {
+          background-color: var(--secondary);
+        }
+
+        /* Menu Section */
+        .menu-section {
+          padding: 2rem 0;
+        }
+
+        .menu-header {
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+          margin-bottom: 2rem;
+        }
+
+        .back-btn {
+          background-color: var(--muted);
+          color: var(--muted-foreground);
+          border: none;
+          padding: 0.75rem 1rem;
+          border-radius: var(--radius);
+          cursor: pointer;
+          font-weight: 600;
+        }
+
+        .back-btn:hover {
+          background-color: var(--border);
+        }
+
+        .menu-categories {
+          display: flex;
+          gap: 1rem;
+          margin-bottom: 2rem;
+          flex-wrap: wrap;
+        }
+
+        .category-btn {
+          background-color: var(--muted);
+          color: var(--muted-foreground);
+          border: none;
+          padding: 0.5rem 1rem;
+          border-radius: var(--radius);
+          cursor: pointer;
+          transition: all 0.2s;
+        }
+
+        .category-btn.active {
+          background-color: var(--primary);
+          color: var(--primary-foreground);
+        }
+
+        .menu-items {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+          gap: 1.5rem;
+        }
+
+        .menu-item {
+          background-color: var(--card);
+          border-radius: var(--radius);
+          padding: 1.5rem;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+          transition: all 0.2s;
+        }
+
+        .menu-item:hover {
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .menu-item-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-start;
+          margin-bottom: 1rem;
+        }
+
+        .menu-item h4 {
+          font-size: 1.25rem;
+          color: var(--card-foreground);
+        }
+
+        .menu-item-price {
+          font-size: 1.25rem;
+          font-weight: 700;
+          color: var(--primary);
+        }
+
+        .menu-item-description {
+          color: var(--muted-foreground);
+          margin-bottom: 1rem;
+          font-size: 0.9rem;
+        }
+
+        .add-to-cart-btn {
+          background-color: var(--primary);
+          color: var(--primary-foreground);
+          border: none;
+          padding: 0.75rem 1.5rem;
+          border-radius: var(--radius);
+          cursor: pointer;
+          font-weight: 600;
+          width: 100%;
+          transition: all 0.2s;
+        }
+
+        .add-to-cart-btn:hover {
+          background-color: var(--secondary);
+        }
+
+        /* Modal Styles */
+        .modal {
+          display: none;
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background-color: rgba(0, 0, 0, 0.5);
+          z-index: 1000;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .modal.active {
+          display: flex;
+        }
+
+        .modal-content {
+          background-color: var(--popover);
+          border-radius: var(--radius);
+          max-width: 500px;
+          width: 90%;
+          max-height: 90vh;
+          overflow-y: auto;
+          box-shadow: 0 20px 25px rgba(0, 0, 0, 0.25);
+        }
+
+        .modal-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 1.5rem;
+          border-bottom: 1px solid var(--border);
+        }
+
+        .modal-header h3 {
+          color: var(--popover-foreground);
+        }
+
+        .close-btn {
+          background: none;
+          border: none;
+          font-size: 1.5rem;
+          cursor: pointer;
+          color: var(--muted-foreground);
+        }
+
+        .close-btn:hover {
+          color: var(--foreground);
+        }
+
+        .modal-body {
+          padding: 1.5rem;
+        }
+
+        .modal-footer {
+          display: flex;
+          gap: 1rem;
+          padding: 1.5rem;
+          border-top: 1px solid var(--border);
+          justify-content: flex-end;
+        }
+
+        /* Form Styles */
+        .form-group {
+          margin-bottom: 1rem;
+        }
+
+        .form-group label {
+          display: block;
+          margin-bottom: 0.5rem;
+          font-weight: 600;
+          color: var(--foreground);
+        }
+
+        .form-group input, .form-group textarea {
+          width: 100%;
+          padding: 0.75rem;
+          border: 1px solid var(--border);
+          border-radius: var(--radius);
+          background-color: var(--input);
+          color: var(--foreground);
+          font-size: 1rem;
+        }
+
+        .form-group input:focus, .form-group textarea:focus {
+          outline: 2px solid var(--ring);
+          border-color: var(--primary);
+        }
+
+        /* Button Styles */
+        .btn-primary {
+          background-color: var(--primary);
+          color: var(--primary-foreground);
+          border: none;
+          padding: 0.75rem 1.5rem;
+          border-radius: var(--radius);
+          cursor: pointer;
+          font-weight: 600;
+          transition: all 0.2s;
+        }
+
+        .btn-primary:hover {
+          background-color: var(--secondary);
+        }
+
+        .btn-secondary {
+          background-color: var(--muted);
+          color: var(--muted-foreground);
+          border: none;
+          padding: 0.75rem 1.5rem;
+          border-radius: var(--radius);
+          cursor: pointer;
+          font-weight: 600;
+          transition: all 0.2s;
+        }
+
+        .btn-secondary:hover {
+          background-color: var(--border);
+        }
+
+        /* Cart Styles */
+        .cart-item {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 1rem 0;
+          border-bottom: 1px solid var(--border);
+        }
+
+        .cart-item:last-child {
+          border-bottom: none;
+        }
+
+        .cart-item-info h4 {
+          color: var(--foreground);
+          margin-bottom: 0.25rem;
+        }
+
+        .cart-item-meta {
+          font-size: 0.9rem;
+          color: var(--muted-foreground);
+        }
+
+        .cart-item-controls {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+        }
+
+        .quantity-btn {
+          background-color: var(--muted);
+          color: var(--muted-foreground);
+          border: none;
+          width: 30px;
+          height: 30px;
+          border-radius: 50%;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .quantity-btn:hover {
+          background-color: var(--border);
+        }
+
+        .cart-total {
+          text-align: center;
+          padding: 1rem 0;
+          font-size: 1.25rem;
+          color: var(--foreground);
+        }
+
+        /* Admin Dashboard */
+        .admin-dashboard {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background-color: var(--background);
+          z-index: 1000;
+        }
+
+        .admin-sidebar {
+          position: fixed;
+          left: 0;
+          top: 0;
+          width: 250px;
+          height: 100%;
+          background-color: var(--sidebar);
+          border-right: 1px solid var(--sidebar-border);
+          padding: 2rem 1rem;
+        }
+
+        .admin-sidebar h3 {
+          color: var(--sidebar-foreground);
+          margin-bottom: 2rem;
+          text-align: center;
+        }
+
+        .admin-nav {
+          display: flex;
+          flex-direction: column;
+          gap: 0.5rem;
+        }
+
+        .admin-nav-btn {
+          background: none;
+          border: none;
+          padding: 1rem;
+          text-align: left;
+          cursor: pointer;
+          border-radius: var(--radius);
+          color: var(--sidebar-foreground);
+          font-weight: 500;
+          transition: all 0.2s;
+        }
+
+        .admin-nav-btn:hover, .admin-nav-btn.active {
+          background-color: var(--sidebar-accent);
+          color: var(--sidebar-accent-foreground);
+        }
+
+        .admin-content {
+          margin-left: 250px;
+          padding: 2rem;
+          height: 100vh;
+          overflow-y: auto;
+        }
+
+        .admin-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 2rem;
+        }
+
+        .admin-table {
+          background-color: var(--card);
+          border-radius: var(--radius);
+          overflow: hidden;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .admin-table table {
+          width: 100%;
+          border-collapse: collapse;
+        }
+
+        .admin-table th, .admin-table td {
+          padding: 1rem;
+          text-align: left;
+          border-bottom: 1px solid var(--border);
+        }
+
+        .admin-table th {
+          background-color: var(--muted);
+          color: var(--muted-foreground);
+          font-weight: 600;
+        }
+
+        .admin-table td {
+          color: var(--card-foreground);
+        }
+
+        /* Toast Notifications */
+        .toast-container {
+          position: fixed;
+          top: 20px;
+          right: 20px;
+          z-index: 2000;
+        }
+
+        .toast {
+          background-color: var(--primary);
+          color: var(--primary-foreground);
+          padding: 1rem 1.5rem;
+          border-radius: var(--radius);
+          margin-bottom: 0.5rem;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+          animation: slideIn 0.3s ease-out;
+        }
+
+        .toast.success {
+          background-color: #10b981;
+        }
+
+        .toast.error {
+          background-color: var(--destructive);
+        }
+
+        @keyframes slideIn {
+          from {
+            transform: translateX(100%);
+            opacity: 0;
+          }
+          to {
+            transform: translateX(0);
+            opacity: 1;
+          }
+        }
+
+        /* Floating Cart Button */
+        .floating-cart-btn {
+          position: fixed;
+          bottom: 20px;
+          right: 20px;
+          background-color: var(--primary);
+          color: var(--primary-foreground);
+          border: none;
+          width: 60px;
+          height: 60px;
+          border-radius: 50%;
+          cursor: pointer;
+          font-size: 1.2rem;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+          z-index: 100;
+          display: none;
+          align-items: center;
+          justify-content: center;
+          transition: all 0.3s;
+        }
+
+        .floating-cart-btn:hover {
+          transform: scale(1.1);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+          .header .container {
+            flex-direction: column;
+            gap: 1rem;
+          }
+
+          .nav-search {
+            order: 3;
+            max-width: none;
+          }
+
+          .hero-content h2 {
+            font-size: 2rem;
+          }
+
+          .hero-content p {
+            font-size: 1rem;
+          }
+
+          .restaurants-grid {
+            grid-template-columns: 1fr;
+          }
+
+          .menu-items {
+            grid-template-columns: 1fr;
+          }
+
+          .modal-content {
+            width: 95%;
+          }
+
+          .admin-sidebar {
+            width: 200px;
+          }
+
+          .admin-content {
+            margin-left: 200px;
+            padding: 1rem;
+          }
+
+          .floating-cart-btn {
+            display: flex;
+          }
+
+          .cart-btn {
+            display: none;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .admin-dashboard {
+            flex-direction: column;
+          }
+
+          .admin-sidebar {
+            position: relative;
+            width: 100%;
+            height: auto;
+            padding: 1rem;
+          }
+
+          .admin-nav {
+            flex-direction: row;
+            overflow-x: auto;
+          }
+
+          .admin-content {
+            margin-left: 0;
+          }
+
+          .admin-table {
+            overflow-x: auto;
+          }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="nav-brand">
+                <h1>🍽️ TastyBites India</h1>
+            </div>
+            <div class="nav-search">
+                <input type="text" id="searchInput" placeholder="Search restaurants or dishes..." class="search-input">
+            </div>
+            <div class="nav-actions">
+                <button class="cart-btn" id="cartBtn">
+                    🛒 Cart (<span id="cartCount">0</span>)
+                </button>
+                <button class="admin-btn" id="adminBtn">Admin</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="container">
+                <div class="hero-content">
+                    <h2>Discover Amazing Food from Multiple Restaurants</h2>
+                    <p>Order from your favorite local restaurants and enjoy delicious meals delivered to your door</p>
+                    <button class="cta-btn" onclick="scrollToRestaurants()">Explore Restaurants</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Restaurants Section -->
+        <section class="restaurants" id="restaurantsSection">
+            <div class="container">
+                <h2>Featured Restaurants</h2>
+                <div class="restaurants-grid" id="restaurantsGrid">
+                    <!-- Restaurants will be loaded here -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Menu Section (Hidden by default) -->
+        <section class="menu-section" id="menuSection" style="display: none;">
+            <div class="container">
+                <div class="menu-header">
+                    <button class="back-btn" id="backBtn">← Back to Restaurants</button>
+                    <h2 id="restaurantName">Restaurant Menu</h2>
+                </div>
+                <div class="menu-categories" id="menuCategories">
+                    <!-- Menu categories will be loaded here -->
+                </div>
+                <div class="menu-items" id="menuItems">
+                    <!-- Menu items will be loaded here -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Cart Modal -->
+    <div class="modal" id="cartModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Your Cart</h3>
+                <button class="close-btn" id="closeCartBtn">×</button>
+            </div>
+            <div class="modal-body">
+                <div id="cartItems">
+                    <!-- Cart items will be loaded here -->
+                </div>
+                <div class="cart-total">
+                    <strong>Total: ₹<span id="cartTotal">0</span></strong>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" id="clearCartBtn">Clear Cart</button>
+                <button class="btn-primary" id="checkoutBtn">Proceed to Checkout</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Checkout Modal -->
+    <div class="modal" id="checkoutModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Checkout</h3>
+                <button class="close-btn" id="closeCheckoutBtn">×</button>
+            </div>
+            <div class="modal-body">
+                <form id="checkoutForm">
+                    <div class="form-group">
+                        <label for="customerName">Full Name</label>
+                        <input type="text" id="customerName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="customerPhone">Phone Number</label>
+                        <input type="tel" id="customerPhone" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="customerAddress">Delivery Address</label>
+                        <textarea id="customerAddress" required></textarea>
+                    </div>
+                    <div class="order-summary">
+                        <h4>Order Summary</h4>
+                        <div id="checkoutItems"></div>
+                        <div class="checkout-total">
+                            <strong>Total: ₹<span id="checkoutTotal">0</span></strong>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" id="cancelCheckoutBtn">Cancel</button>
+                <button class="btn-primary" id="placeOrderBtn">Place Order</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Login Modal -->
+    <div class="modal" id="adminLoginModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Admin Login</h3>
+                <button class="close-btn" id="closeAdminLoginBtn">×</button>
+            </div>
+            <div class="modal-body">
+                <form id="adminLoginForm">
+                    <div class="form-group">
+                        <label for="adminUsername">Username</label>
+                        <input type="text" id="adminUsername" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="adminPassword">Password</label>
+                        <input type="password" id="adminPassword" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" id="cancelAdminLoginBtn">Cancel</button>
+                <button class="btn-primary" id="adminLoginSubmitBtn">Login</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard (Hidden by default) -->
+    <div class="admin-dashboard" id="adminDashboard" style="display: none;">
+        <div class="admin-sidebar">
+            <h3>Admin Panel</h3>
+            <nav class="admin-nav">
+                <button class="admin-nav-btn active" data-section="restaurants">Restaurants</button>
+                <button class="admin-nav-btn" data-section="orders">Orders</button>
+                <button class="admin-nav-btn" data-section="menu">Menu Items</button>
+                <button class="admin-nav-btn" id="logoutBtn">Logout</button>
+            </nav>
+        </div>
+        <div class="admin-content">
+            <div class="admin-section" id="adminRestaurants">
+                <div class="admin-header">
+                    <h2>Manage Restaurants</h2>
+                    <button class="btn-primary" id="addRestaurantBtn">Add Restaurant</button>
+                </div>
+                <div class="admin-table">
+                    <table id="restaurantsTable">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Cuisine</th>
+                                <th>Rating</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Restaurant data will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="admin-section" id="adminOrders" style="display: none;">
+                <div class="admin-header">
+                    <h2>Manage Orders</h2>
+                </div>
+                <div class="admin-table">
+                    <table id="ordersTable">
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Customer</th>
+                                <th>Restaurant</th>
+                                <th>Total</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Order data will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="admin-section" id="adminMenu" style="display: none;">
+                <div class="admin-header">
+                    <h2>Manage Menu Items</h2>
+                    <button class="btn-primary" id="addMenuItemBtn">Add Menu Item</button>
+                </div>
+                <div class="admin-table">
+                    <table id="menuItemsTable">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Restaurant</th>
+                                <th>Category</th>
+                                <th>Price</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Menu items data will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Floating Cart Button (Mobile) -->
+    <button class="floating-cart-btn" id="floatingCartBtn">
+        🛒 <span id="floatingCartCount">0</span>
+    </button>
+
+    <script>
+        /* Embedded all JavaScript functionality into the HTML file */
+        // Application State
+        let currentRestaurant = null
+        let cart = []
+        const orders = []
+        let isAdminLoggedIn = false
+        let currentMenuCategory = "all"
+
+        // Sample Data
+        const restaurants = [
+          {
+            id: 1,
+            name: "Pizza Palace",
+            cuisine: "Italian",
+            rating: 4.5,
+            deliveryTime: "30-45 min",
+            image: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400&h=200&fit=crop",
+            description: "Authentic Italian pizzas with fresh ingredients and traditional recipes.",
+          },
+          {
+            id: 2,
+            name: "Burger Barn",
+            cuisine: "American",
+            rating: 4.2,
+            deliveryTime: "25-35 min",
+            image: "https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=400&h=200&fit=crop",
+            description: "Gourmet burgers made with premium beef and artisanal buns.",
+          },
+          {
+            id: 3,
+            name: "Sushi Spot",
+            cuisine: "Japanese",
+            rating: 4.8,
+            deliveryTime: "40-55 min",
+            image: "https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?w=400&h=200&fit=crop",
+            description: "Fresh sushi and sashimi prepared by expert Japanese chefs.",
+          },
+        ]
+
+        const menuItems = {
+          1: [
+            // Pizza Palace
+            {
+              id: 1,
+              name: "Margherita Pizza",
+              category: "pizza",
+              price: 299,
+              description: "Classic pizza with tomato sauce, mozzarella, and fresh basil",
+              image: "https://images.unsplash.com/photo-1604382354936-07c5d9983bd3?w=300&h=200&fit=crop",
+            },
+            {
+              id: 2,
+              name: "Pepperoni Pizza",
+              category: "pizza",
+              price: 399,
+              description: "Spicy pepperoni with mozzarella cheese",
+              image: "https://images.unsplash.com/photo-1628840042765-356cda07504e?w=300&h=200&fit=crop",
+            },
+            {
+              id: 3,
+              name: "Caesar Salad",
+              category: "salad",
+              price: 199,
+              description: "Fresh romaine lettuce with Caesar dressing and croutons",
+              image: "https://images.unsplash.com/photo-1546793665-c74683f339c1?w=300&h=200&fit=crop",
+            },
+            {
+              id: 4,
+              name: "Garlic Bread",
+              category: "appetizer",
+              price: 149,
+              description: "Crispy bread with garlic butter and herbs",
+              image: "https://images.unsplash.com/photo-1573140247632-f8fd74997d5c?w=300&h=200&fit=crop",
+            },
+          ],
+          2: [
+            // Burger Barn
+            {
+              id: 5,
+              name: "Classic Burger",
+              category: "burger",
+              price: 249,
+              description: "Beef patty with lettuce, tomato, and special sauce",
+              image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=300&h=200&fit=crop",
+            },
+            {
+              id: 6,
+              name: "Cheese Burger",
+              category: "burger",
+              price: 279,
+              description: "Classic burger with melted cheese",
+              image: "https://images.unsplash.com/photo-1586190848861-99aa4a171e90?w=300&h=200&fit=crop",
+            },
+            {
+              id: 7,
+              name: "French Fries",
+              category: "sides",
+              price: 99,
+              description: "Crispy golden fries with sea salt",
+              image: "https://images.unsplash.com/photo-1576107232684-1279f390859f?w=300&h=200&fit=crop",
+            },
+            {
+              id: 8,
+              name: "Chicken Wings",
+              category: "appetizer",
+              price: 199,
+              description: "Spicy buffalo wings with ranch dip",
+              image: "https://images.unsplash.com/photo-1527477396000-e27163b481c2?w=300&h=200&fit=crop",
+            },
+          ],
+          3: [
+            // Sushi Spot
+            {
+              id: 9,
+              name: "California Roll",
+              category: "roll",
+              price: 299,
+              description: "Crab, avocado, and cucumber roll",
+              image: "https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?w=300&h=200&fit=crop",
+            },
+            {
+              id: 10,
+              name: "Salmon Sashimi",
+              category: "sashimi",
+              price: 399,
+              description: "Fresh salmon slices",
+              image: "https://images.unsplash.com/photo-1553621042-f6e147245754?w=300&h=200&fit=crop",
+            },
+            {
+              id: 11,
+              name: "Miso Soup",
+              category: "soup",
+              price: 149,
+              description: "Traditional Japanese soup with tofu and seaweed",
+              image: "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=300&h=200&fit=crop",
+            },
+            {
+              id: 12,
+              name: "Tempura",
+              category: "appetizer",
+              price: 249,
+              description: "Lightly battered and fried vegetables",
+              image: "https://images.unsplash.com/photo-1541529086526-db283c563270?w=300&h=200&fit=crop",
+            },
+          ],
+        }
+
+        // Utility Functions
+        function showToast(message, type = "success") {
+          const toast = document.createElement("div")
+          toast.className = `toast ${type}`
+          toast.textContent = message
+
+          document.getElementById("toastContainer").appendChild(toast)
+
+          setTimeout(() => {
+            toast.remove()
+          }, 3000)
+        }
+
+        function updateCartCount() {
+          const count = cart.reduce((total, item) => total + item.quantity, 0)
+          document.getElementById("cartCount").textContent = count
+          document.getElementById("floatingCartCount").textContent = count
+        }
+
+        function calculateCartTotal() {
+          return cart.reduce((total, item) => total + item.price * item.quantity, 0)
+        }
+
+        function scrollToRestaurants() {
+          document.getElementById("restaurantsSection").scrollIntoView({ behavior: "smooth" })
+        }
+
+        // Restaurant Functions
+        function loadRestaurants() {
+          const grid = document.getElementById("restaurantsGrid")
+          grid.innerHTML = ""
+
+          restaurants.forEach((restaurant) => {
+            const card = document.createElement("div")
+            card.className = "restaurant-card"
+            card.innerHTML = `
+                    <img src="${restaurant.image}" alt="${restaurant.name}" class="restaurant-image">
+                    <div class="restaurant-info">
+                        <h3>${restaurant.name}</h3>
+                        <div class="restaurant-meta">
+                            <span>⭐ ${restaurant.rating}</span>
+                            <span>🕒 ${restaurant.deliveryTime}</span>
+                            <span>🍽️ ${restaurant.cuisine}</span>
+                        </div>
+                        <p class="restaurant-description">${restaurant.description}</p>
+                        <button class="view-menu-btn" onclick="viewMenu(${restaurant.id})">View Menu</button>
+                    </div>
+                `
+            grid.appendChild(card)
+          })
+        }
+
+        function viewMenu(restaurantId) {
+          currentRestaurant = restaurants.find((r) => r.id === restaurantId)
+          document.getElementById("restaurantName").textContent = currentRestaurant.name
+
+          // Hide restaurants section and show menu section
+          document.getElementById("restaurantsSection").style.display = "none"
+          document.getElementById("menuSection").style.display = "block"
+
+          loadMenuCategories()
+          loadMenuItems()
+        }
+
+        function loadMenuCategories() {
+          const categories = ["all", ...new Set(menuItems[currentRestaurant.id].map((item) => item.category))]
+          const categoriesContainer = document.getElementById("menuCategories")
+          categoriesContainer.innerHTML = ""
+
+          categories.forEach((category) => {
+            const btn = document.createElement("button")
+            btn.className = `category-btn ${category === currentMenuCategory ? "active" : ""}`
+            btn.textContent = category.charAt(0).toUpperCase() + category.slice(1)
+            btn.onclick = () => filterMenuByCategory(category)
+            categoriesContainer.appendChild(btn)
+          })
+        }
+
+        function filterMenuByCategory(category) {
+          currentMenuCategory = category
+          loadMenuCategories()
+          loadMenuItems()
+        }
+
+        function loadMenuItems() {
+          const itemsContainer = document.getElementById("menuItems")
+          itemsContainer.innerHTML = ""
+
+          const items =
+            currentMenuCategory === "all"
+              ? menuItems[currentRestaurant.id]
+              : menuItems[currentRestaurant.id].filter((item) => item.category === currentMenuCategory)
+
+          items.forEach((item) => {
+            const itemDiv = document.createElement("div")
+            itemDiv.className = "menu-item"
+            itemDiv.innerHTML = `
+                    <div class="menu-item-header">
+                        <h4>${item.name}</h4>
+                        <span class="menu-item-price">₹${item.price}</span>
+                    </div>
+                    <p class="menu-item-description">${item.description}</p>
+                    <button class="add-to-cart-btn" onclick="addToCart(${item.id})">Add to Cart</button>
+                `
+            itemsContainer.appendChild(itemDiv)
+          })
+        }
+
+        function goBackToRestaurants() {
+          document.getElementById("menuSection").style.display = "none"
+          document.getElementById("restaurantsSection").style.display = "block"
+          currentRestaurant = null
+          currentMenuCategory = "all"
+        }
+
+        // Cart Functions
+        function addToCart(itemId) {
+          const item = menuItems[currentRestaurant.id].find((i) => i.id === itemId)
+          const existingItem = cart.find((i) => i.id === itemId)
+
+          if (existingItem) {
+            existingItem.quantity += 1
+          } else {
+            cart.push({
+              ...item,
+              restaurantId: currentRestaurant.id,
+              restaurantName: currentRestaurant.name,
+              quantity: 1,
+            })
+          }
+
+          updateCartCount()
+          showToast(`${item.name} added to cart!`)
+        }
+
+        function removeFromCart(itemId) {
+          cart = cart.filter((item) => item.id !== itemId)
+          updateCartCount()
+          loadCartItems()
+        }
+
+        function updateQuantity(itemId, change) {
+          const item = cart.find((i) => i.id === itemId)
+          if (item) {
+            item.quantity += change
+            if (item.quantity <= 0) {
+              removeFromCart(itemId)
+            } else {
+              updateCartCount()
+              loadCartItems()
+            }
+          }
+        }
+
+        function loadCartItems() {
+          const container = document.getElementById("cartItems")
+          container.innerHTML = ""
+
+          if (cart.length === 0) {
+            container.innerHTML = "<p>Your cart is empty</p>"
+            document.getElementById("cartTotal").textContent = "0"
+            return
+          }
+
+          cart.forEach((item) => {
+            const itemDiv = document.createElement("div")
+            itemDiv.className = "cart-item"
+            itemDiv.innerHTML = `
+                    <div class="cart-item-info">
+                        <h4>${item.name}</h4>
+                        <div class="cart-item-meta">${item.restaurantName} • ₹${item.price}</div>
+                    </div>
+                    <div class="cart-item-controls">
+                        <button class="quantity-btn" onclick="updateQuantity(${item.id}, -1)">-</button>
+                        <span>${item.quantity}</span>
+                        <button class="quantity-btn" onclick="updateQuantity(${item.id}, 1)">+</button>
+                        <button class="quantity-btn" onclick="removeFromCart(${item.id})" style="margin-left: 0.5rem;">🗑️</button>
+                    </div>
+                `
+            container.appendChild(itemDiv)
+          })
+
+          document.getElementById("cartTotal").textContent = calculateCartTotal()
+        }
+
+        function clearCart() {
+          cart = []
+          updateCartCount()
+          loadCartItems()
+          showToast("Cart cleared!")
+        }
+
+        function showCart() {
+          loadCartItems()
+          document.getElementById("cartModal").classList.add("active")
+        }
+
+        function hideCart() {
+          document.getElementById("cartModal").classList.remove("active")
+        }
+
+        // Checkout Functions
+        function showCheckout() {
+          if (cart.length === 0) {
+            showToast("Your cart is empty!", "error")
+            return
+          }
+
+          hideCart()
+          loadCheckoutItems()
+          document.getElementById("checkoutModal").classList.add("active")
+        }
+
+        function loadCheckoutItems() {
+          const container = document.getElementById("checkoutItems")
+          container.innerHTML = ""
+
+          cart.forEach((item) => {
+            const itemDiv = document.createElement("div")
+            itemDiv.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                        <span>${item.name} x${item.quantity}</span>
+                        <span>₹${item.price * item.quantity}</span>
+                    </div>
+                `
+            container.appendChild(itemDiv)
+          })
+
+          document.getElementById("checkoutTotal").textContent = calculateCartTotal()
+        }
+
+        function hideCheckout() {
+          document.getElementById("checkoutModal").classList.remove("active")
+          document.getElementById("checkoutForm").reset()
+        }
+
+        function placeOrder() {
+          const form = document.getElementById("checkoutForm")
+          const formData = new FormData(form)
+
+          const name = document.getElementById("customerName").value
+          const phone = document.getElementById("customerPhone").value
+          const address = document.getElementById("customerAddress").value
+
+          if (!name || !phone || !address) {
+            showToast("Please fill all fields!", "error")
+            return
+          }
+
+          const order = {
+            id: Date.now(),
+            customer: { name, phone, address },
+            items: [...cart],
+            total: calculateCartTotal(),
+            status: "pending",
+            timestamp: new Date().toISOString(),
+            restaurantId: cart[0].restaurantId,
+            restaurantName: cart[0].restaurantName,
+          }
+
+          orders.push(order)
+          cart = []
+          updateCartCount()
+          hideCheckout()
+
+          showToast("Order placed successfully!")
+
+          // Show order confirmation
+          setTimeout(() => {
+            alert(`Order #${order.id} has been placed!\nTotal: ₹${order.total}\nEstimated delivery: 30-45 minutes`)
+          }, 500)
+        }
+
+        // Admin Functions
+        function showAdminLogin() {
+          document.getElementById("adminLoginModal").classList.add("active")
+        }
+
+        function hideAdminLogin() {
+          document.getElementById("adminLoginModal").classList.remove("active")
+          document.getElementById("adminLoginForm").reset()
+        }
+
+        function adminLogin() {
+          const username = document.getElementById("adminUsername").value
+          const password = document.getElementById("adminPassword").value
+
+          // Simple authentication (in real app, this would be server-side)
+          if (username === "admin" && password === "admin123") {
+            isAdminLoggedIn = true
+            hideAdminLogin()
+            showAdminDashboard()
+            showToast("Admin login successful!")
+          } else {
+            showToast("Invalid credentials!", "error")
+          }
+        }
+
+        function showAdminDashboard() {
+          document.querySelector(".main").style.display = "none"
+          document.getElementById("adminDashboard").style.display = "block"
+          loadAdminRestaurants()
+        }
+
+        function hideAdminDashboard() {
+          document.querySelector(".main").style.display = "block"
+          document.getElementById("adminDashboard").style.display = "none"
+          isAdminLoggedIn = false
+        }
+
+        function showAdminSection(sectionName) {
+          // Hide all sections
+          document.querySelectorAll(".admin-section").forEach((section) => {
+            section.style.display = "none"
+          })
+
+          // Remove active class from all nav buttons
+          document.querySelectorAll(".admin-nav-btn").forEach((btn) => {
+            btn.classList.remove("active")
+          })
+
+          // Show selected section
+          document.getElementById(`admin${sectionName.charAt(0).toUpperCase() + sectionName.slice(1)}`).style.display = "block"
+
+          // Add active class to clicked button
+          event.target.classList.add("active")
+
+          // Load section data
+          switch (sectionName) {
+            case "restaurants":
+              loadAdminRestaurants()
+              break
+            case "orders":
+              loadAdminOrders()
+              break
+            case "menu":
+              loadAdminMenuItems()
+              break
+          }
+        }
+
+        function loadAdminRestaurants() {
+          const tbody = document.querySelector("#restaurantsTable tbody")
+          tbody.innerHTML = ""
+
+          restaurants.forEach((restaurant) => {
+            const row = document.createElement("tr")
+            row.innerHTML = `
+                    <td>${restaurant.name}</td>
+                    <td>${restaurant.cuisine}</td>
+                    <td>⭐ ${restaurant.rating}</td>
+                    <td>
+                        <button class="btn-secondary" onclick="editRestaurant(${restaurant.id})">Edit</button>
+                        <button class="btn-secondary" onclick="deleteRestaurant(${restaurant.id})" style="margin-left: 0.5rem; background-color: var(--destructive); color: var(--destructive-foreground);">Delete</button>
+                    </td>
+                `
+            tbody.appendChild(row)
+          })
+        }
+
+        function loadAdminOrders() {
+          const tbody = document.querySelector("#ordersTable tbody")
+          tbody.innerHTML = ""
+
+          orders.forEach((order) => {
+            const row = document.createElement("tr")
+            row.innerHTML = `
+                    <td>#${order.id}</td>
+                    <td>${order.customer.name}</td>
+                    <td>${order.restaurantName}</td>
+                    <td>₹${order.total}</td>
+                    <td>
+                        <select onchange="updateOrderStatus(${order.id}, this.value)">
+                            <option value="pending" ${order.status === "pending" ? "selected" : ""}>Pending</option>
+                            <option value="preparing" ${order.status === "preparing" ? "selected" : ""}>Preparing</option>
+                            <option value="ready" ${order.status === "ready" ? "selected" : ""}>Ready</option>
+                            <option value="delivered" ${order.status === "delivered" ? "selected" : ""}>Delivered</option>
+                        </select>
+                    </td>
+                    <td>
+                        <button class="btn-secondary" onclick="viewOrderDetails(${order.id})">View</button>
+                    </td>
+                `
+            tbody.appendChild(row)
+          })
+        }
+
+        function loadAdminMenuItems() {
+          const tbody = document.querySelector("#menuItemsTable tbody")
+          tbody.innerHTML = ""
+
+          Object.keys(menuItems).forEach((restaurantId) => {
+            const restaurant = restaurants.find((r) => r.id == restaurantId)
+            menuItems[restaurantId].forEach((item) => {
+              const row = document.createElement("tr")
+              row.innerHTML = `
+                        <td>${item.name}</td>
+                        <td>${restaurant.name}</td>
+                        <td>${item.category}</td>
+                        <td>₹${item.price}</td>
+                        <td>
+                            <button class="btn-secondary" onclick="editMenuItem(${item.id})">Edit</button>
+                            <button class="btn-secondary" onclick="deleteMenuItem(${item.id})" style="margin-left: 0.5rem; background-color: var(--destructive); color: var(--destructive-foreground);">Delete</button>
+                        </td>
+                    `
+              tbody.appendChild(row)
+            })
+          })
+        }
+
+        function updateOrderStatus(orderId, status) {
+          const order = orders.find((o) => o.id === orderId)
+          if (order) {
+            order.status = status
+            showToast(`Order #${orderId} status updated to ${status}`)
+          }
+        }
+
+        // Search Function
+        function searchItems() {
+          const query = document.getElementById("searchInput").value.toLowerCase()
+          if (!query) return
+
+          // Search in restaurants
+          const matchingRestaurants = restaurants.filter(
+            (restaurant) =>
+              restaurant.name.toLowerCase().includes(query) ||
+              restaurant.cuisine.toLowerCase().includes(query) ||
+              restaurant.description.toLowerCase().includes(query),
+          )
+
+          // Search in menu items
+          let matchingItems = []
+          Object.keys(menuItems).forEach((restaurantId) => {
+            const restaurant = restaurants.find((r) => r.id == restaurantId)
+            const items = menuItems[restaurantId].filter(
+              (item) =>
+                item.name.toLowerCase().includes(query) ||
+                item.description.toLowerCase().includes(query) ||
+                item.category.toLowerCase().includes(query),
+            )
+            matchingItems = matchingItems.concat(
+              items.map((item) => ({ ...item, restaurantName: restaurant.name, restaurantId: restaurant.id })),
+            )
+          })
+
+          if (matchingRestaurants.length > 0 || matchingItems.length > 0) {
+            showToast(`Found ${matchingRestaurants.length} restaurants and ${matchingItems.length} menu items`)
+          } else {
+            showToast("No results found", "error")
+          }
+        }
+
+        // Event Listeners
+        document.addEventListener("DOMContentLoaded", () => {
+          // Load initial data
+          loadRestaurants()
+          updateCartCount()
+
+          // Header event listeners
+          document.getElementById("cartBtn").addEventListener("click", showCart)
+          document.getElementById("floatingCartBtn").addEventListener("click", showCart)
+          document.getElementById("adminBtn").addEventListener("click", showAdminLogin)
+          document.getElementById("searchInput").addEventListener("keypress", (e) => {
+            if (e.key === "Enter") {
+              searchItems()
+            }
+          })
+
+          // Menu navigation
+          document.getElementById("backBtn").addEventListener("click", goBackToRestaurants)
+
+          // Cart modal event listeners
+          document.getElementById("closeCartBtn").addEventListener("click", hideCart)
+          document.getElementById("clearCartBtn").addEventListener("click", clearCart)
+          document.getElementById("checkoutBtn").addEventListener("click", showCheckout)
+
+          // Checkout modal event listeners
+          document.getElementById("closeCheckoutBtn").addEventListener("click", hideCheckout)
+          document.getElementById("cancelCheckoutBtn").addEventListener("click", hideCheckout)
+          document.getElementById("placeOrderBtn").addEventListener("click", placeOrder)
+
+          // Admin login modal event listeners
+          document.getElementById("closeAdminLoginBtn").addEventListener("click", hideAdminLogin)
+          document.getElementById("cancelAdminLoginBtn").addEventListener("click", hideAdminLogin)
+          document.getElementById("adminLoginSubmitBtn").addEventListener("click", adminLogin)
+
+          // Admin dashboard event listeners
+          document.getElementById("logoutBtn").addEventListener("click", hideAdminDashboard)
+          document.querySelectorAll(".admin-nav-btn:not(#logoutBtn)").forEach((btn) => {
+            btn.addEventListener("click", function () {
+              showAdminSection(this.dataset.section)
+            })
+          })
+
+          // Close modals when clicking outside
+          document.querySelectorAll(".modal").forEach((modal) => {
+            modal.addEventListener("click", (e) => {
+              if (e.target === modal) {
+                modal.classList.remove("active")
+              }
+            })
+          })
+        })
+    </script>
+</body>
+</html>
